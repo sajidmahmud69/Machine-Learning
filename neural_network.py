@@ -38,18 +38,19 @@ def create_data (points, classes):
         y[ix] = class_number
     return X, y
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
-print ("here")
-X, y = create_data (100, 3)
+# print ("here")
+# X, y = create_data (100, 3)
 
-plt.scatter (X[:, 0], X[:, 1])
-plt.show ()
+# plt.scatter (X[:, 0], X[:, 1])
+# plt.show ()
 
-plt.scatter (X[:, 0], X[:, 1], c = y, cmap= 'brg')
-plt.show ()
+# plt.scatter (X[:, 0], X[:, 1], c = y, cmap= 'brg')
+# plt.show ()
 
 
+# Actual Code ------------------------------------------------------------------------------------------------------------
 
 import numpy as np
 import nnfs
@@ -84,15 +85,63 @@ class Activation_ReLU:
     def forward (self, inputs):
         self.output = np.maximum (0, inputs)
 
-layer1 = Layer_Dense (2,5)
-activation1= Activation_ReLU ()
+class Activation_Softmax:
+    def forward (self, inputs):
+        exp_values = np.exp (inputs - np.max (inputs, axis = 1, keepdims = True))
+        probabilities = exp_values / np.sum (exp_values, axis=1, keepdims=True)
+        self.output = probabilities
 
-layer2 = Layer_Dense (5,2)                                       # layer2 first param has to match layer1 last param
+X, y = spiral_data (samples = 100, classes = 3)
 
-layer1.forward (X)
+dense1 = Layer_Dense (2, 3)
+activation1 = Activation_ReLU()
+
+dense2 = Layer_Dense (3, 3)
+activation2 = Activation_Softmax ()
+
+dense1.forward (X)
+activation1.forward (dense1.output)
+
+dense2.forward (activation1.output)
+activation2.forward (dense2.output)
+
+print (activation2.output[:5])
+
+# --------------------------------------------------------------------------------------------------------------------------------
+# import math
+
+# layer_outputs = [[4.8, 1.21, 2.385],
+#                  [8.9, -1.81, 0.2],
+#                  [1.41, 1.051, 0.026]]
+# E = math.e
+
+# exp_values = []
+
+# Method 1 to get exponential values with e
+# for output in layer_outputs:
+#     exp_values.append(E**output) 
+
+# norm_base = sum (exp_values)
+# norm_values = []
+
+# for value in exp_values:
+#     norm_values.append (value/ norm_base)
+
+# Method 2 to get exponential values
+# exp_values = np.exp (layer_outputs)
+# norm_values = exp_values/np.sum (exp_values, axis=1, keepdims=True)
+# print (norm_values)
+
+
+# layer1 = Layer_Dense (2,5)
+# activation1= Activation_ReLU ()
+
+# layer2 = Layer_Dense (5,2)                                       # layer2 first param has to match layer1 last param
+
+# layer1.forward (X)
 # print (layer1.output)
-activation1.forward (layer1.output)
-print (activation1.output)
+# activation1.forward (layer1.output)
+# print (activation1.output)
 # print (layer1.output)
 # layer2.forward (layer1.output)
 # print (layer2.output)

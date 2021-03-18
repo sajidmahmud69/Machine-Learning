@@ -1,2 +1,3 @@
 # Machine-Learning
-Neural Network created from scratch for practice by watching Sentdex Youtube tutorial
+A collection of machine learning model and deep learning model
+
